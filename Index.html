@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CalmAnchor | Anxiety Aid</title>
+    <style>
+        /* CSS: Designed for calmness and accessibility */
+        :root {
+            --bg-color: #2D3748; /* Dark Blue-Grey */
+            --circle-color: #63B3ED; /* Light Blue */
+            --text-color: #F7FAFC;
+            --accent-color: #F6E05E; /* Soft Yellow */
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            transition: background-color 0.5s;
+        }
+
+        /* The Breathing Container */
+        .container {
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 {
+            font-weight: 300;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        /* The Visual Breathing Circle */
+        .circle-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .breathing-circle {
+            background-color: var(--circle-color);
+            height: 100%;
+            width: 100%;
+            border-radius: 50%;
+            position: absolute;
+            z-index: 1;
+            opacity: 0.3;
+            transform: scale(0.8);
+        }
+
+        /* Text inside the circle */
+        .instruction-text {
+            position: relative;
+            z-index: 2;
+            font-size: 1.5rem;
+            font-weight: bold;
+            pointer-events: none;
+        }
+
+        /* Buttons area */
+        .controls {
+            margin-top: 50px;
+            display: flex;
+            gap: 20px;
+        }
+
+        button {
+            background: transparent;
+            border: 2px solid var(--text-color);
+            color: var(--text-color);
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: var(--text-color);
+            color: var(--bg-color);
+        }
+
+        /* Grounding Exercise Modal (Hidden by default) */
+        .grounding-panel {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+            z-index: 20;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .grounding-step {
+            font-size: 1.5rem;
+            margin: 20px 0;
+            text-align: center;
+            max-width: 600px;
+            line-height: 1.4;
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 5px;
+            background: rgba(255,255,255,0.1);
+            margin-top: 20px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--accent-color);
+            width: 20%;
+            transition: width 0.3s;
+        }
+
+        /* Animations */
+        /* We use JS to trigger these to sync perfectly with text */
+        .grow { animation: grow 4s linear forwards; }
+        .hold { animation: hold 4s linear forwards; } /* Simplified to 4s for demo */
+        .shrink { animation: shrink 4s linear forwards; }
+
+        @keyframes grow { from { transform: scale(0.6); } to { transform: scale(1.1); } }
+        @keyframes hold { from { transform: scale(1.1); } to { transform: scale(1.1); } }
+        @keyframes shrink { from { transform: scale(1.1); } to { transform: scale(0.6); } }
+
+    </style>
+</head>
+<body>
+
+    <!-- Main Breathing Interface -->
+    <div class="container" id="breathing-view">
+        <h1>CalmAnchor</h1>
+        
+        <div class="circle-container">
+            <div class="breathing-circle" id="circle"></div>
+            <div class="instruction-text" id="text">Click Start</div>
+        </div>
+
+        <div class="controls">
+            <button onclick="startBreathing()">Start Breathing</button>
+            <button onclick="toggleGrounding(true)">Grounding 5-4-3-2-1</button>
+        </div>
+        
+        <p style="margin-top: 30px; font-size: 0.8rem; opacity: 0.6;">
+            Helpline: 988 (Crisis Lifeline)
+        </p>
+    </div>
+
+    <!-- Grounding Exercise Interface -->
+    <div class="grounding-panel" id="grounding-view">
+        <h2 style="color: var(--accent-color)">Grounding Technique</h2>
+        <div class="grounding-step" id="grounding-text">Look around and name 5 things you can see.</div>
+        
+        <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+
+        <div class="controls">
+            <button onclick="nextGroundingStep()">Next Step</button>
+            <button onclick="toggleGrounding(false)">Back to Breathing</button>
+        </div>
+    </div>
+
+    <script>
+        // JAVASCRIPT: No external libraries
+        
+        const circle = document.getElementById('circle');
+        const text = document.getElementById('text');
+        let isBreathing = false;
+
+        // 1. BREATHING LOGIC
+        // A simplified Box Breathing (4-4-4) for code simplicity & demo speed
+        function startBreathing() {
+            if (isBreathing) return;
+            isBreathing = true;
+            text.innerText = "Get Ready...";
+            
+            // Run cycle immediately then interval
+            breathCycle();
+            setInterval(breathCycle, 12000); // Total cycle time 12s (4+4+4)
+        }
+
+        function breathCycle() {
+            // Inhale (4s)
+            text.innerText = "Breathe In...";
+            circle.className = 'breathing-circle grow';
+            
+            // Hold (4s)
+            setTimeout(() => {
+                text.innerText = "Hold...";
+                circle.className = 'breathing-circle hold';
+            }, 4000);
+
+            // Exhale (4s)
+            setTimeout(() => {
+                text.innerText = "Breathe Out...";
+                circle.className = 'breathing-circle shrink';
+            }, 8000);
+        }
+
+        // 2. GROUNDING LOGIC (5-4-3-2-1 Technique)
+        const groundingSteps = [
+            "Look around and find 5 things you can see.",
+            "Find 4 things you can physically feel (like your chair).",
+            "Listen for 3 sounds you can hear right now.",
+            "Identify 2 things you can smell.",
+            "Find 1 thing you can taste."
+        ];
+        let currentStep = 0;
+
+        function toggleGrounding(show) {
+            const main = document.getElementById('breathing-view');
+            const panel = document.getElementById('grounding-view');
+            
+            if (show) {
+                main.style.display = 'none';
+                panel.style.display = 'flex';
+                currentStep = 0;
+                updateGroundingUI();
+            } else {
+                main.style.display = 'block';
+                panel.style.display = 'none';
+            }
+        }
+
+        function nextGroundingStep() {
+            if (currentStep < groundingSteps.length - 1) {
+                currentStep++;
+                updateGroundingUI();
+            } else {
+                document.getElementById('grounding-text').innerText = "Good job. You are here, and you are safe.";
+                document.getElementById('progress').style.width = "100%";
+            }
+        }
+
+        function updateGroundingUI() {
+            document.getElementById('grounding-text').innerText = groundingSteps[currentStep];
+            // Calculate width percentage (20%, 40%, etc.)
+            const pct = ((currentStep + 1) / 5) * 100;
+            document.getElementById('progress').style.width = pct + "%";
+        }
+    </script>
+</body>
+</html>
+
+
