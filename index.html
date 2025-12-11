@@ -3,309 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CalmAnchor | Anxiety Aid</title>
+    <title>CalmAnchor | Modern Anxiety Aid</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+    
     <style>
+        /* ---------------------------------- */
+        /* CSS: GLOBAL & COLORFUL GRADIENT BACKGROUND */
+        /* ---------------------------------- */
         :root {
-            --bg-color: #2D3748;
-            --circle-color: #63B3ED;
-            --text-color: #F7FAFC;
-            --accent-color: #F6E05E;
+            --primary-color: #7983ea; /* Soft Lavender */
+            --accent-color: #3b5998; /* Deep Teal */
+            --text-color: #101f3c; /* Dark Navy */
         }
 
         body {
-            background-color: var(--bg-color);
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
             color: var(--text-color);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            
+            /* Implement the Colorful Gradient Background */
+            background: linear-gradient(135deg, #a8c0ff 0%, #3f2b96 100%);
+            background-attachment: fixed; /* Ensures gradient fills screen */
+
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
+            padding: 40px 20px;
         }
 
-        .container {
+        header {
             text-align: center;
-            position: relative;
-            z-index: 10;
+            color: white; /* Header text stands out on the colorful background */
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
         }
 
-        h1 {
-            font-weight: 300;
-            letter-spacing: 2px;
-            margin-bottom: 20px;
+        h1, h2 {
+            font-weight: 600;
         }
 
-        .circle-container {
-            position: relative;
-            width: 300px;
-            height: 300px;
-            margin: 0 auto;
+        /* ---------------------------------- */
+        /* CSS: GLASS MORPHISM EFFECT */
+        /* ---------------------------------- */
+
+        .glass-card {
+            /* Base Glass Morphism properties */
+            background: rgba(255, 255, 255, 0.15); /* Semi-transparent background */
+            backdrop-filter: blur(12px); /* Crucial blur effect */
+            -webkit-backdrop-filter: blur(12px); /* For Safari support */
+            
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3); /* Subtle light border */
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); /* Soft shadow */
+            
+            padding: 30px;
+            margin: 20px;
+            max-width: 350px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px); /* Lift effect on hover for greater UI */
+            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.5);
+        }
+
+        /* ---------------------------------- */
+        /* CSS: LAYOUT & BUTTON STYLING */
+        /* ---------------------------------- */
+
+        .card-container {
             display: flex;
-            align-items: center;
+            flex-wrap: wrap;
             justify-content: center;
-        }
-
-        .breathing-circle {
-            background-color: var(--circle-color);
-            height: 100%;
-            width: 100%;
-            border-radius: 50%;
-            position: absolute;
-            z-index: 1;
-            opacity: 0.3;
-            transform: scale(0.8);
-        }
-
-        .instruction-text {
-            position: relative;
-            z-index: 2;
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
-        .controls {
-            margin-top: 50px;
-            display: flex;
             gap: 20px;
+            max-width: 1200px;
+            width: 100%;
         }
 
-        button {
-            background: transparent;
-            border: 2px solid var(--text-color);
-            color: var(--text-color);
-            padding: 10px 20px;
+        .cta-button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
             border-radius: 30px;
             cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.3s;
+            font-size: 1em;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: background-color 0.3s ease;
         }
 
-        button:hover {
-            background: var(--text-color);
-            color: var(--bg-color);
+        .cta-button:hover {
+            background-color: #557ed3; /* Slightly lighter blue */
         }
 
-        .grounding-panel {
-            display: none;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-color);
-            z-index: 20;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            box-sizing: border-box;
+        /* Styling for new feature elements (Sound Mixer) */
+        .sound-mixer button {
+            background: rgba(255, 255, 255, 0.5);
+            color: var(--text-color);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            padding: 8px 15px;
+            margin: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
         }
 
-        .grounding-step {
-            font-size: 1.5rem;
-            margin: 20px 0;
-            text-align: center;
-            max-width: 600px;
-            line-height: 1.4;
+        .sound-mixer button:hover {
+            background: rgba(255, 255, 255, 0.8);
         }
 
-        .progress-bar {
-            width: 200px;
-            height: 5px;
-            background: rgba(255,255,255,0.1);
-            margin-top: 20px;
+        #breathing-display {
+            font-size: 1.5em;
+            font-weight: 600;
+            margin: 15px 0;
+            min-height: 30px;
+            transition: color 0.5s ease;
         }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--accent-color);
-            width: 20%;
-            transition: width 0.3s;
-        }
-
-        .grow { animation: grow 4s linear forwards; }
-        .hold { animation: hold 4s linear forwards; }
-        .shrink { animation: shrink 4s linear forwards; }
-
-        @keyframes grow { from { transform: scale(0.6); } to { transform: scale(1.1); } }
-        @keyframes hold { from { transform: scale(1.1); } to { transform: scale(1.1); } }
-        @keyframes shrink { from { transform: scale(1.1); } to { transform: scale(0.6); } }
-
-        /* COMPLETION SCREEN */
-        #completion-box {
-            display: none;
-            margin-top: 40px;
-            font-size: 1.6rem;
-            max-width: 700px;
-            line-height: 1.5;
-            text-align: center;
-            color: var(--accent-color);
-        }
-
     </style>
 </head>
 <body>
-
-    <div class="container" id="breathing-view">
+    <header>
         <h1>CalmAnchor</h1>
+        <p>Your digital aid for grounding and peace.</p>
+    </header>
 
-        <div class="circle-container">
-            <div class="breathing-circle" id="circle"></div>
-            <div class="instruction-text" id="text">Click Start</div>
+    <main class="card-container">
+        <section class="feature-card glass-card breathing-card">
+            <h2>Start Breathing</h2>
+            <p>Follow the guided breathwork to calm your nervous system (4-4-6 technique).</p>
+            <div id="breathing-display">Click Start</div>
+            <button id="breathing-button" class="cta-button">Begin Session</button>
+        </section>
+
+        <section class="feature-card glass-card grounding-card">
+            <h2>Grounding 5-4-3-2-1</h2>
+            <p>Connect with your environment by noticing your surroundings.</p>
+            <button class="cta-button">Start Grounding</button>
+        </section>
+
+        <section class="feature-card glass-card sound-card">
+            <h2>Ambient Soundscapes</h2>
+            <p>Mix calming sounds for instant relaxation.</p>
+            <div class="sound-mixer">
+                <button>Rain</button>
+                <button>Ocean</button>
+                <button>White Noise</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="helpline-info">
+            Crisis Lifeline: <a href="tel:988" style="color: white; text-decoration: none; font-weight: 600;">988</a>
         </div>
-
-        <div class="controls">
-            <button onclick="startBreathing()">Start Breathing</button>
-            <button onclick="toggleGrounding(true)">Grounding 5-4-3-2-1</button>
-        </div>
-
-        <p style="margin-top: 30px; font-size: 0.8rem; opacity: 0.6;">
-            Helpline: 988 (Crisis Lifeline)
-        </p>
-    </div>
-
-    <!-- Grounding UI -->
-    <div class="grounding-panel" id="grounding-view">
-        <h2 style="color: var(--accent-color)">Grounding Technique</h2>
-        <div class="grounding-step" id="grounding-text">Look around and name 5 things you can see.</div>
-
-        <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
-
-        <div class="controls">
-            <button onclick="nextGroundingStep()" id="next-btn">Next Step</button>
-            <button onclick="toggleGrounding(false)">Back to Breathing</button>
-        </div>
-
-        <div id="completion-box"></div>
-    </div>
+    </footer>
 
     <script>
-        const circle = document.getElementById('circle');
-        const text = document.getElementById('text');
-        let isBreathing = false;
+        const breathingButton = document.getElementById('breathing-button');
+        const breathingDisplay = document.getElementById('breathing-display');
+        let timer = null;
+        let isRunning = false;
 
-        function startBreathing() {
-            if (isBreathing) return;
-            isBreathing = true;
-            text.innerText = "Get Ready...";
-            breathCycle();
-            setInterval(breathCycle, 12000);
-        }
-
-        function breathCycle() {
-            text.innerText = "Breathe In...";
-            circle.className = 'breathing-circle grow';
-
-            setTimeout(() => {
-                text.innerText = "Hold...";
-                circle.className = 'breathing-circle hold';
-            }, 4000);
-
-            setTimeout(() => {
-                text.innerText = "Breathe Out...";
-                circle.className = 'breathing-circle shrink';
-            }, 8000);
-        }
-
-        const groundingSteps = [
-            "Look around and find 5 things you can see.",
-            "Find 4 things you can physically feel.",
-            "Listen for 3 sounds you can hear.",
-            "Identify 2 things you can smell.",
-            "Find 1 thing you can taste."
+        // Define the breathing cycle (e.g., 4-4-6 technique)
+        const cycle = [
+            { text: 'Inhale (4s)', duration: 4000, color: '#32cd32' }, // Lime Green
+            { text: 'Hold (4s)', duration: 4000, color: '#ffd700' },   // Gold
+            { text: 'Exhale (6s)', duration: 6000, color: '#ff6347' },  // Tomato Red
         ];
-        let currentStep = 0;
+        let cycleIndex = 0;
 
-        function toggleGrounding(show) {
-            const main = document.getElementById('breathing-view');
-            const panel = document.getElementById('grounding-view');
+        function runBreathingCycle() {
+            if (!isRunning) return;
 
-            if (show) {
-                main.style.display = 'none';
-                panel.style.display = 'flex';
-                currentStep = 0;
-                updateGroundingUI();
-                document.getElementById("completion-box").style.display = "none";
+            const phase = cycle[cycleIndex];
+            
+            breathingDisplay.textContent = phase.text;
+            breathingDisplay.style.color = phase.color;
+            
+            // Move to the next phase after the duration
+            timer = setTimeout(() => {
+                cycleIndex = (cycleIndex + 1) % cycle.length;
+                runBreathingCycle();
+            }, phase.duration);
+        }
+
+        function startSession() {
+            if (isRunning) {
+                // Stop the session
+                clearTimeout(timer);
+                isRunning = false;
+                breathingButton.textContent = 'Begin Session';
+                breathingDisplay.textContent = 'Click Start';
+                breathingDisplay.style.color = var('--text-color');
             } else {
-                panel.style.display = 'none';
-                main.style.display = 'block';
+                // Start the session
+                isRunning = true;
+                breathingButton.textContent = 'Stop Session';
+                cycleIndex = 0; // Start from the beginning
+                runBreathingCycle();
             }
         }
 
-        /* SENTENCES YOU PROVIDED */
-        const compliments = [
-            "Yoga begins with the breath and grows with awareness.",
-            "When the breath is calm, the mind becomes calm.",
-            "Deep breathing is the simplest way to return to yourself.",
-            "A steady breath creates a steady life.",
-            "Yoga teaches us to listen to the body, not force it.",
-            "Breathing exercises are the bridge between the body and the mind.",
-            "Slow breathing is a natural way to reduce stress and restore balance.",
-            "With every inhale, you bring in peace; with every exhale, you release tension.",
-            "Yoga is not about touching your toes, but about what you learn on the way down.",
-            "Breath is our constant companion; yoga teaches us to use it wisely.",
-            "Conscious breathing helps us stay focused in every situation.",
-            "A mindful breath can change your entire mood.",
-            "Yoga reminds us that strength and softness can exist together.",
-            "When you control your breath, you control your thoughts.",
-            "Breathing exercises improve clarity, energy, and emotional balance.",
-            "The breath is the first step toward inner peace.",
-            "Yoga helps the body move and the mind slow down.",
-            "Every deep breath is a chance to start again.",
-            "In yoga, progress is measured in awareness, not perfection.",
-            "Breathing deeply is one of the kindest things you can do for your body.",
-            "Yoga strengthens the body while relaxing the mind.",
-            "Your breath is a natural tool for healing and restoring calm.",
-            "A peaceful breath leads to peaceful actions.",
-            "Breathing exercises improve attention and reduce distractions.",
-            "Yoga teaches patience, one breath at a time.",
-            "When the breath flows freely, energy flows freely.",
-            "Inhaling confidence, exhaling worry can become a daily practice.",
-            "Yoga connects physical health with mental well-being.",
-            "A few minutes of mindful breathing can change your entire day.",
-            "Yoga begins in the body, but its benefits reach into every part of life."
-        ];
-
-        let complimentIndex = 0;
-
-        function nextGroundingStep() {
-            if (currentStep < groundingSteps.length - 1) {
-                currentStep++;
-                updateGroundingUI();
-            } else {
-                showCompletion();
-            }
-        }
-
-        function updateGroundingUI() {
-            document.getElementById('grounding-text').innerText = groundingSteps[currentStep];
-            const pct = ((currentStep + 1) / 5) * 100;
-            document.getElementById('progress').style.width = pct + "%";
-        }
-
-        /* COMPLETION LOGIC ADDED */
-        function showCompletion() {
-            document.getElementById("grounding-text").innerText = "";
-            document.getElementById("next-btn").style.display = "block";
-
-            const box = document.getElementById("completion-box");
-            box.style.display = "block";
-            box.innerHTML = "YOU HAVE COMPLETED YOUR COURSE — GET THE COMPLIMENT!";
-
-            document.getElementById("next-btn").innerText = "Get Compliment";
-            document.getElementById("next-btn").onclick = rotateCompliments;
-            document.getElementById("progress").style.width = "100%";
-        }
-
-        function rotateCompliments() {
-            const box = document.getElementById("completion-box");
-            box.innerHTML = compliments[complimentIndex];
-
-            complimentIndex = (complimentIndex + 1) % compliments.length;
-        }
-
+        breathingButton.addEventListener('click', startSession);
     </script>
 </body>
 </html>
