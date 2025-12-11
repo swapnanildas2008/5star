@@ -5,12 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CalmAnchor | Anxiety Aid</title>
     <style>
-        /* CSS: Designed for calmness and accessibility */
         :root {
-            --bg-color: #2D3748; /* Dark Blue-Grey */
-            --circle-color: #63B3ED; /* Light Blue */
+            --bg-color: #2D3748;
+            --circle-color: #63B3ED;
             --text-color: #F7FAFC;
-            --accent-color: #F6E05E; /* Soft Yellow */
+            --accent-color: #F6E05E;
         }
 
         body {
@@ -24,10 +23,8 @@
             height: 100vh;
             margin: 0;
             overflow: hidden;
-            transition: background-color 0.5s;
         }
 
-        /* The Breathing Container */
         .container {
             text-align: center;
             position: relative;
@@ -40,7 +37,6 @@
             margin-bottom: 20px;
         }
 
-        /* The Visual Breathing Circle */
         .circle-container {
             position: relative;
             width: 300px;
@@ -62,16 +58,13 @@
             transform: scale(0.8);
         }
 
-        /* Text inside the circle */
         .instruction-text {
             position: relative;
             z-index: 2;
             font-size: 1.5rem;
             font-weight: bold;
-            pointer-events: none;
         }
 
-        /* Buttons area */
         .controls {
             margin-top: 50px;
             display: flex;
@@ -94,7 +87,6 @@
             color: var(--bg-color);
         }
 
-        /* Grounding Exercise Modal (Hidden by default) */
         .grounding-panel {
             display: none;
             position: absolute;
@@ -125,6 +117,7 @@
             background: rgba(255,255,255,0.1);
             margin-top: 20px;
         }
+
         .progress-fill {
             height: 100%;
             background: var(--accent-color);
@@ -132,24 +125,32 @@
             transition: width 0.3s;
         }
 
-        /* Animations */
-        /* We use JS to trigger these to sync perfectly with text */
         .grow { animation: grow 4s linear forwards; }
-        .hold { animation: hold 4s linear forwards; } /* Simplified to 4s for demo */
+        .hold { animation: hold 4s linear forwards; }
         .shrink { animation: shrink 4s linear forwards; }
 
         @keyframes grow { from { transform: scale(0.6); } to { transform: scale(1.1); } }
         @keyframes hold { from { transform: scale(1.1); } to { transform: scale(1.1); } }
         @keyframes shrink { from { transform: scale(1.1); } to { transform: scale(0.6); } }
 
+        /* COMPLETION SCREEN */
+        #completion-box {
+            display: none;
+            margin-top: 40px;
+            font-size: 1.6rem;
+            max-width: 700px;
+            line-height: 1.5;
+            text-align: center;
+            color: var(--accent-color);
+        }
+
     </style>
 </head>
 <body>
 
-    <!-- Main Breathing Interface -->
     <div class="container" id="breathing-view">
         <h1>CalmAnchor</h1>
-        
+
         <div class="circle-container">
             <div class="breathing-circle" id="circle"></div>
             <div class="instruction-text" id="text">Click Start</div>
@@ -159,67 +160,59 @@
             <button onclick="startBreathing()">Start Breathing</button>
             <button onclick="toggleGrounding(true)">Grounding 5-4-3-2-1</button>
         </div>
-        
+
         <p style="margin-top: 30px; font-size: 0.8rem; opacity: 0.6;">
             Helpline: 988 (Crisis Lifeline)
         </p>
     </div>
 
-    <!-- Grounding Exercise Interface -->
+    <!-- Grounding UI -->
     <div class="grounding-panel" id="grounding-view">
         <h2 style="color: var(--accent-color)">Grounding Technique</h2>
         <div class="grounding-step" id="grounding-text">Look around and name 5 things you can see.</div>
-        
+
         <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
 
         <div class="controls">
-            <button onclick="nextGroundingStep()">Next Step</button>
+            <button onclick="nextGroundingStep()" id="next-btn">Next Step</button>
             <button onclick="toggleGrounding(false)">Back to Breathing</button>
         </div>
+
+        <div id="completion-box"></div>
     </div>
 
     <script>
-        // JAVASCRIPT: No external libraries
-        
         const circle = document.getElementById('circle');
         const text = document.getElementById('text');
         let isBreathing = false;
 
-        // 1. BREATHING LOGIC
-        // A simplified Box Breathing (4-4-4) for code simplicity & demo speed
         function startBreathing() {
             if (isBreathing) return;
             isBreathing = true;
             text.innerText = "Get Ready...";
-            
-            // Run cycle immediately then interval
             breathCycle();
-            setInterval(breathCycle, 12000); // Total cycle time 12s (4+4+4)
+            setInterval(breathCycle, 12000);
         }
 
         function breathCycle() {
-            // Inhale (4s)
             text.innerText = "Breathe In...";
             circle.className = 'breathing-circle grow';
-            
-            // Hold (4s)
+
             setTimeout(() => {
                 text.innerText = "Hold...";
                 circle.className = 'breathing-circle hold';
             }, 4000);
 
-            // Exhale (4s)
             setTimeout(() => {
                 text.innerText = "Breathe Out...";
                 circle.className = 'breathing-circle shrink';
             }, 8000);
         }
 
-        // 2. GROUNDING LOGIC (5-4-3-2-1 Technique)
         const groundingSteps = [
             "Look around and find 5 things you can see.",
-            "Find 4 things you can physically feel (like your chair).",
-            "Listen for 3 sounds you can hear right now.",
+            "Find 4 things you can physically feel.",
+            "Listen for 3 sounds you can hear.",
             "Identify 2 things you can smell.",
             "Find 1 thing you can taste."
         ];
@@ -228,36 +221,91 @@
         function toggleGrounding(show) {
             const main = document.getElementById('breathing-view');
             const panel = document.getElementById('grounding-view');
-            
+
             if (show) {
                 main.style.display = 'none';
                 panel.style.display = 'flex';
                 currentStep = 0;
                 updateGroundingUI();
+                document.getElementById("completion-box").style.display = "none";
             } else {
-                main.style.display = 'block';
                 panel.style.display = 'none';
+                main.style.display = 'block';
             }
         }
+
+        /* SENTENCES YOU PROVIDED */
+        const compliments = [
+            "Yoga begins with the breath and grows with awareness.",
+            "When the breath is calm, the mind becomes calm.",
+            "Deep breathing is the simplest way to return to yourself.",
+            "A steady breath creates a steady life.",
+            "Yoga teaches us to listen to the body, not force it.",
+            "Breathing exercises are the bridge between the body and the mind.",
+            "Slow breathing is a natural way to reduce stress and restore balance.",
+            "With every inhale, you bring in peace; with every exhale, you release tension.",
+            "Yoga is not about touching your toes, but about what you learn on the way down.",
+            "Breath is our constant companion; yoga teaches us to use it wisely.",
+            "Conscious breathing helps us stay focused in every situation.",
+            "A mindful breath can change your entire mood.",
+            "Yoga reminds us that strength and softness can exist together.",
+            "When you control your breath, you control your thoughts.",
+            "Breathing exercises improve clarity, energy, and emotional balance.",
+            "The breath is the first step toward inner peace.",
+            "Yoga helps the body move and the mind slow down.",
+            "Every deep breath is a chance to start again.",
+            "In yoga, progress is measured in awareness, not perfection.",
+            "Breathing deeply is one of the kindest things you can do for your body.",
+            "Yoga strengthens the body while relaxing the mind.",
+            "Your breath is a natural tool for healing and restoring calm.",
+            "A peaceful breath leads to peaceful actions.",
+            "Breathing exercises improve attention and reduce distractions.",
+            "Yoga teaches patience, one breath at a time.",
+            "When the breath flows freely, energy flows freely.",
+            "Inhaling confidence, exhaling worry can become a daily practice.",
+            "Yoga connects physical health with mental well-being.",
+            "A few minutes of mindful breathing can change your entire day.",
+            "Yoga begins in the body, but its benefits reach into every part of life."
+        ];
+
+        let complimentIndex = 0;
 
         function nextGroundingStep() {
             if (currentStep < groundingSteps.length - 1) {
                 currentStep++;
                 updateGroundingUI();
             } else {
-                document.getElementById('grounding-text').innerText = "Good job. You are here, and you are safe.";
-                document.getElementById('progress').style.width = "100%";
+                showCompletion();
             }
         }
 
         function updateGroundingUI() {
             document.getElementById('grounding-text').innerText = groundingSteps[currentStep];
-            // Calculate width percentage (20%, 40%, etc.)
             const pct = ((currentStep + 1) / 5) * 100;
             document.getElementById('progress').style.width = pct + "%";
         }
+
+        /* COMPLETION LOGIC ADDED */
+        function showCompletion() {
+            document.getElementById("grounding-text").innerText = "";
+            document.getElementById("next-btn").style.display = "block";
+
+            const box = document.getElementById("completion-box");
+            box.style.display = "block";
+            box.innerHTML = "YOU HAVE COMPLETED YOUR COURSE — GET THE COMPLIMENT!";
+
+            document.getElementById("next-btn").innerText = "Get Compliment";
+            document.getElementById("next-btn").onclick = rotateCompliments;
+            document.getElementById("progress").style.width = "100%";
+        }
+
+        function rotateCompliments() {
+            const box = document.getElementById("completion-box");
+            box.innerHTML = compliments[complimentIndex];
+
+            complimentIndex = (complimentIndex + 1) % compliments.length;
+        }
+
     </script>
 </body>
 </html>
-
-
